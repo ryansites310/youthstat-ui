@@ -1,0 +1,148 @@
+<div class="container container-lg">
+    <div class="d-flex">
+        <div class="mr-auto mb-3 mt-2">
+            <button class="btn btn-info btm-sm" type="button"><em class="ion-plus mr-2"></em>Add Task</button>
+        </div>
+        <div class="ml-auto wd-md text-right mt-2"><small class="text-muted lh1">* Kanban view powered by Dragula</small></div>
+    </div>
+    <form class="mb-3">
+        <div class="form-row align-items-center">
+            <div class="col-8">
+                <input class="form-control" type="text" placeholder="Filter tasks...">
+            </div>
+            <div class="col-4">
+                <select class="custom-select fw">
+                    <option value="">Select state</option>
+                    <option value="">Pending</option>
+                    <option value="">In Progress</option>
+                    <option value="">Done</option>
+                </select>
+            </div>
+        </div>
+    </form>
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="cardbox">
+                <div class="cardbox-heading">
+                    <div class="total float-right">$ {{pendingTotal}}</div>
+                    <h3 class="cardbox-title">Pending</h3>
+                </div>
+                <div class="cardbox-body">
+                    <div [dragula]="'task-bag'" [style.minHeight]="'50px'" [dragulaModel]='pendingItems'>
+                        <div class="cardbox" *ngFor="let item of pendingItems">
+                            <div class="pb-1 bg-gradient-primary top-line"></div>
+                            <div class="cardbox-body">
+                                <div class="d-flex flex-wrap">
+                                    <div class="mr-4"><img class="shadow-z5 thumb48 rounded" [src]="item.image" alt="user"></div>
+                                    <div>
+                                        <p class="my-1"><strong>{{item.name}}</strong></p><small>{{item.address}}</small>
+                                    </div>
+                                    <div class="ml-auto mr-0 mt-0 mr-lg-auto ml-lg-0 mt-lg-4 ml-xl-auto mr-xl-0 mt-xl-0">
+                                        <span class="budget p-2 badge badge-primary">$ {{item.budget}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cardbox-footer">
+                                <!-- START dropdown-->
+                                <div class="float-right dropdown" dropdown>
+                                    <button class="btn btn-flat btn-flat-icon" type="button" dropdownToggle>
+                                        <em class="ion-android-more-horizontal"></em>
+                                    </button>
+                                    <div *dropdownMenu class="dropdown-menu dropdown-scale dropdown-menu-right" role="menu">
+                                        <a class="dropdown-item" href="#">Add meeting</a>
+                                        <a class="dropdown-item" href="#">Edit</a>
+                                        <a class="dropdown-item" href="#">Remove</a>
+                                    </div>
+                                </div>
+                                <!-- END dropdown-->
+                                <p class="mb-0"><small><em class="ion-record text-danger mr-2"></em></small><small class="text-muted"><strong class="mr-2">1 Task overdue</strong></small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="cardbox">
+                <div class="cardbox-heading">
+                    <div class="total float-right">$ {{inprogressTotal}}</div>
+                    <h3 class="cardbox-title">In Progress</h3>
+                </div>
+                <div class="cardbox-body">
+                    <div [dragula]="'task-bag'" [style.minHeight]="'50px'" [dragulaModel]='inprogressItems'>
+                        <div class="cardbox" *ngFor="let item of inprogressItems">
+                            <div class="pb-1 bg-gradient-info top-line"></div>
+                            <div class="cardbox-body">
+                                <div class="d-flex flex-wrap">
+                                    <div class="mr-4"><img class="shadow-z5 thumb48 rounded" [src]="item.image" alt="user"></div>
+                                    <div>
+                                        <p class="my-1"><strong>{{item.name}}</strong></p><small>{{item.address}}</small>
+                                    </div>
+                                    <div class="ml-auto mr-0 mt-0 mr-lg-auto ml-lg-0 mt-lg-4 ml-xl-auto mr-xl-0 mt-xl-0">
+                                        <span class="budget p-2 badge badge-info">$ {{item.budget}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cardbox-footer">
+                                <!-- START dropdown-->
+                                <div class="float-right dropdown" dropdown>
+                                    <button class="btn btn-flat btn-flat-icon" type="button" dropdownToggle>
+                                        <em class="ion-android-more-horizontal"></em>
+                                    </button>
+                                    <div *dropdownMenu class="dropdown-menu dropdown-scale dropdown-menu-right" role="menu">
+                                        <a class="dropdown-item" href="#">Add meeting</a>
+                                        <a class="dropdown-item" href="#">Edit</a>
+                                        <a class="dropdown-item" href="#">Remove</a>
+                                    </div>
+                                </div>
+                                <!-- END dropdown-->
+                                <p class="mb-0"><small><em class="ion-record text-danger mr-2"></em></small><small class="text-muted"><strong class="mr-2">1 Task overdue</strong></small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="cardbox">
+                <div class="cardbox-heading">
+                    <div class="total float-right">$ {{doneTotal}}</div>
+                    <h3 class="cardbox-title">Done</h3>
+                </div>
+                <div class="cardbox-body">
+                    <div [dragula]="'task-bag'" [style.minHeight]="'50px'" [dragulaModel]='doneItems'>
+                        <div class="cardbox" *ngFor="let item of doneItems">
+                            <div class="pb-1 bg-gradient-success top-line"></div>
+                            <div class="cardbox-body">
+                                <div class="d-flex flex-wrap">
+                                    <div class="mr-4"><img class="shadow-z5 thumb48 rounded" [src]="item.image" alt="user"></div>
+                                    <div>
+                                        <p class="my-1"><strong>{{item.name}}</strong></p><small>{{item.address}}</small>
+                                    </div>
+                                    <div class="ml-auto mr-0 mt-0 mr-lg-auto ml-lg-0 mt-lg-4 ml-xl-auto mr-xl-0 mt-xl-0">
+                                        <span class="budget p-2 badge badge-success">$ {{item.budget}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cardbox-footer">
+                                <!-- START dropdown-->
+                                <div class="float-right dropdown" dropdown>
+                                    <button class="btn btn-flat btn-flat-icon" type="button" dropdownToggle>
+                                        <em class="ion-android-more-horizontal"></em>
+                                    </button>
+                                    <div *dropdownMenu class="dropdown-menu dropdown-scale dropdown-menu-right" role="menu">
+                                        <a class="dropdown-item" href="#">Add meeting</a>
+                                        <a class="dropdown-item" href="#">Edit</a>
+                                        <a class="dropdown-item" href="#">Remove</a>
+                                    </div>
+                                </div>
+                                <!-- END dropdown-->
+                                <p class="mb-0"><small><em class="ion-record text-danger mr-2"></em></small><small class="text-muted"><strong class="mr-2">1 Task overdue</strong></small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

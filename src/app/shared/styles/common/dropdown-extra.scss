@@ -1,0 +1,47 @@
+/**
+ * Dropdowns Extras
+ */
+
+@import '../common/variables';
+@import '../common/mixins';
+
+// !important used to override element style
+// applied by popper.js (not present in alpha-6)
+
+.dropdown-card {
+    max-width: 20rem;
+}
+
+// Dropdown with scale effect
+.dropdown-scale {
+    display: block;
+    opacity: 0;
+    padding: 0;
+    transform: scale(0) !important;
+    transition: all .3s;
+    backface-visibility: hidden !important;
+    transform-origin: top left !important;
+    &.float-right,
+    &.dropdown-menu-right {
+        transform-origin: top right !important;
+    }
+}
+
+.dropdown-menu-right {
+    right: 0;
+    left: auto !important;
+}
+
+.show > .dropdown-scale {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+}
+
+.dropup .dropdown-scale {
+    transform-origin: bottom left;
+    &.float-right,
+    &.dropdown-menu-right {
+        transform-origin: bottom right;
+    }
+}
+
