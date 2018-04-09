@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { CustomValidators } from 'ng2-validation';
 
 @Component({
@@ -7,31 +7,27 @@ import { CustomValidators } from 'ng2-validation';
     templateUrl: './signin.component.html',
     styleUrls: ['./signin.component.scss']
 })
-export class SigninComponent implements OnInit {
+export class SigninComponent implements OnInit, OnDestroy {
+    lang: any;
 
-    loginForm: FormGroup;
-
-    constructor(fb: FormBuilder) {
-
-        this.loginForm = fb.group({
-            'email': [null, Validators.compose([Validators.required, CustomValidators.email])],
-            'password': [null, Validators.required]
-        });
-    }
-
-    submitForm($ev, form: FormGroup) {
-        $ev.preventDefault();
-        let value = form.value;
-        for (let c in form.controls) {
-            form.controls[c].markAsTouched();
-        }
-        if (form.valid) {
-            console.log('Valid!');
-        }
-        console.log(value);
+    constructor(public oidcSecurityService: OidcSecurityService
+    ) {
+        this.oidcSecurityService.onModuleSetup.subscribe(() => { this.onModuleSetup(); });
     }
 
     ngOnInit() {
+        if (this.oidcSecurityService.moduleSetup) {
+            this.onModuleSetup();
+        }
+    }
+
+    ngOnDestroy(): void {
+        this.oidcSecurityService.onModuleSetup.unsubscribe();
+    }
+
+    private onModuleSetup() {
+        console.log('signin component onModuleSetup()');
+        this.oidcSecurityService.authorize();
     }
 
 }

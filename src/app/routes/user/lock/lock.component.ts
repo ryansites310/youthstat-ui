@@ -2,6 +2,7 @@ import { Component, OnInit, Injector } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CustomValidators } from 'ng2-validation';
 import { Router } from '@angular/router';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 
 @Component({
   selector: 'app-lock',
@@ -13,11 +14,13 @@ export class LockComponent implements OnInit {
     router: Router;
     lockForm: FormGroup;
 
-    constructor(fb: FormBuilder, private inj: Injector) {
+    constructor(fb: FormBuilder, private inj: Injector, private oidcSecurityService: OidcSecurityService) {
 
         this.lockForm = fb.group({
             'password': [null, Validators.required]
         });
+
+        this.oidcSecurityService.logoff();
     }
 
     submitForm($ev, form: FormGroup) {
