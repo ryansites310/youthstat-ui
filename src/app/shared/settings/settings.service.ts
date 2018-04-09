@@ -11,21 +11,21 @@ export class SettingsService {
         // Global Settings
         // -----------------------------------
         this.app = {
-            name: 'Dasha',
+            name: 'YouthStat',
             description: 'Bootstrap 4 Admin Template',
             layout: {
                 rtl: false
             },
             sidebar: {
-                showtoolbar: true, // profile area in sidebar
+                showtoolbar: false, // profile area in sidebar
                 visible: false, // mobile sidebar visible
                 coverMode: false,  // cover mode
                 coverModeVisible: false // cover mode sidebar visible
             },
             footer: {
-                fixed: false
+                fixed: true
             },
-            theme: 'theme-default' // no actively used
+            theme: 'theme-dark' // no actively used
         };
 
     }

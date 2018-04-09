@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation, AfterViewInit, ViewChild } from '@angular/core';
 import { GoogleMapsAPIWrapper } from '@agm/core';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { Subscription } from 'rxjs/Subscription';
 
 declare var $: any;
 declare var google: any;
@@ -19,6 +21,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
     public dt: Date = new Date();
     tm;
+    userDataSubscription: Subscription;
+    isAuthorizedSubscription: Subscription;
 
     // Sparklines
     sparkValue1 = [4, 2, 3, 5, 3, 2, 3, 4, 6];
@@ -65,7 +69,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         },
         tooltip: true,
         tooltipOpts: {
-            content: function(label, x, y) {
+            content: function (label, x, y) {
                 return x + ' : ' + y;
             }
         },
@@ -86,7 +90,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 color: this.colors.byName('blueGrey-200')
             },
             //position: 'right' or 'left',
-            tickFormatter: function(v) {
+            tickFormatter: function (v) {
                 return v /* + ' visitors'*/;
             }
         },
@@ -311,8 +315,23 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     };
 
-    constructor(pt: PagetitleService, private colors: ColorsService, private mapWrapper: GoogleMapsAPIWrapper) {
+    constructor(pt: PagetitleService, private colors: ColorsService, private mapWrapper: GoogleMapsAPIWrapper,
+        private oidcSecurityService: OidcSecurityService) {
         pt.setTitle('Dashboard');
+
+        if (this.oidcSecurityService.moduleSetup) {
+            this.doCallbackLogicIfRequired();
+        } else {
+            this.oidcSecurityService.onModuleSetup.subscribe(() => {
+                this.doCallbackLogicIfRequired();
+            });
+        }
+    }
+
+    private doCallbackLogicIfRequired() {
+        if (window.location.hash) {
+            this.oidcSecurityService.authorizedCallback();
+        }
     }
 
     ngOnInit() {
@@ -329,15 +348,35 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }, 4000);
 
 
+        this.isAuthorizedSubscription = this.oidcSecurityService.getIsAuthorized().subscribe(
+            (isAuthorized: boolean) => {
+                console.log('authorized - ' + isAuthorized);
+            });
+
+        this.userDataSubscription = this.oidcSecurityService.getUserData().subscribe(
+            (userData: any) => {
+
+                if (userData && userData !== '') {
+                    console.log('user name = ' + userData.name);
+                    console.log('email = ' + userData.email);
+                    console.log('user - ' + JSON.stringify( userData));
+                } else {
+                    console.log('userData null');
+                }
+
+
+            });
+
+
         // Animate counting of numbers
-        $('[data-counter]').each(function() {
+        $('[data-counter]').each(function () {
             var $this = $(this);
             $this.prop('counter', 0).animate({
                 counter: $this.data('counter')
             }, {
                     duration: 3000,
                     easing: 'swing',
-                    step: function(now) {
+                    step: function (now) {
                         $this.text(numberWithCommas(Math.ceil(now)));
                     }
                 });
