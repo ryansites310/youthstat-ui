@@ -6,14 +6,18 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TranslateService, TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
-import {
-    AuthModule,
-    OidcSecurityService,
-    OpenIDImplicitFlowConfiguration,
-    OidcConfigService,
-    AuthWellKnownEndpoints
-} from 'angular-auth-oidc-client';
+// import {
+//     AuthModule,
+//     OidcSecurityService,
+//     OpenIDImplicitFlowConfiguration,
+//     OidcConfigService,
+//     AuthWellKnownEndpoints
+// } from 'angular-auth-oidc-client';
 
+import { AngularFireModule } from 'angularfire2';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
+import { AngularFireAuthModule } from 'angularfire2/auth';
+import { environment } from '../environments/environment';
 
 import { AppComponent } from './app.component';
 
@@ -21,25 +25,25 @@ import { CoreModule } from './core/core.module';
 import { LayoutModule } from './layout/layout.module';
 import { SharedModule } from './shared/shared.module';
 import { RoutesModule } from './routes/routes.module';
+import { AuthService } from './shared/auth.service';
+import { AlertService } from './shared/alert.service';
 
 // https://github.com/ocombe/ng2-translate/issues/218
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/static/i18n/', '.json');
 }
 
-export function loadConfig(oidcConfigService: OidcConfigService) {
-    console.log('APP_INITIALIZER STARTING');
-    return () => oidcConfigService.load_using_stsServer('https://accounts.google.com');
-}
-
 @NgModule({
     declarations: [
         AppComponent
     ],
+    providers: [AuthService, AlertService],
     imports: [
         HttpClientModule,
-        AuthModule.forRoot(),
-        // BrowserModule,
+        AngularFireModule.initializeApp(environment.firebase),
+        AngularFirestoreModule, // imports firebase/firestore, only needed for database features
+        AngularFireAuthModule, // imports firebase/auth, only needed for auth features
+        // BrowserModule,     
         BrowserAnimationsModule,
         CoreModule,
         LayoutModule,
@@ -52,48 +56,7 @@ export function loadConfig(oidcConfigService: OidcConfigService) {
                 deps: [HttpClient]
             }
         })
-    ],
-    providers: [
-        OidcSecurityService,
-        OidcConfigService,
-        {
-            provide: APP_INITIALIZER,
-            useFactory: loadConfig,
-            deps: [OidcConfigService],
-            multi: true
-        }],
+    ],    
     bootstrap: [AppComponent]
 })
-export class AppModule {
-    constructor(
-        private oidcSecurityService: OidcSecurityService,
-        private oidcConfigService: OidcConfigService,
-    ) {
-        this.oidcConfigService.onConfigurationLoaded.subscribe(() => {
-
-            const openIDImplicitFlowConfiguration = new OpenIDImplicitFlowConfiguration();
-            openIDImplicitFlowConfiguration.stsServer = 'http://accounts.google.com';
-            openIDImplicitFlowConfiguration.redirect_url = 'http://localhost:4300';
-            openIDImplicitFlowConfiguration.client_id = '1076316369658-75dskh1to8l5iiq58lnbl2dt02rqmtev.apps.googleusercontent.com';
-            openIDImplicitFlowConfiguration.response_type = 'id_token token';
-            openIDImplicitFlowConfiguration.scope = 'openid email profile';
-            openIDImplicitFlowConfiguration.post_logout_redirect_uri = 'http://localhost:4300/signup';
-            openIDImplicitFlowConfiguration.post_login_route = '/dashboard';
-            openIDImplicitFlowConfiguration.forbidden_route = '/lock';
-            openIDImplicitFlowConfiguration.unauthorized_route = '/signup';
-            openIDImplicitFlowConfiguration.trigger_authorization_result_event = true;
-            openIDImplicitFlowConfiguration.log_console_warning_active = true;
-            openIDImplicitFlowConfiguration.log_console_debug_active = true;
-            openIDImplicitFlowConfiguration.max_id_token_iat_offset_allowed_in_seconds = 20;
-
-            const authWellKnownEndpoints = new AuthWellKnownEndpoints();
-            authWellKnownEndpoints.setWellKnownEndpoints(this.oidcConfigService.wellKnownEndpoints);
-
-            this.oidcSecurityService.setupModule(openIDImplicitFlowConfiguration, authWellKnownEndpoints);
-
-        });
-
-        console.log('APP STARTING');
-    }
-
-}
+export class AppModule {};

@@ -28,6 +28,9 @@ import { VectormapDirective } from './directives/vectormap/vectormap.directive';
 import { KnobDirective } from './directives/knob/knob.directive';
 
 import { SettingsService } from './settings/settings.service';
+import { UserService } from './user.service';
+import { AuthGuard } from './auth.guard';
+import { UserResolver } from './user.resolver';
 
 import { PeityDirective } from './directives/peity/peity.directive';
 
@@ -57,7 +60,10 @@ import { PeityDirective } from './directives/peity/peity.directive';
         PopoverModule.forRoot()
     ],
     providers: [
-        SettingsService
+        SettingsService,      
+        UserService,
+        AuthGuard,
+        UserResolver      
     ],
     declarations: [
         EasypiechartDirective,

@@ -1,33 +1,77 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { OidcSecurityService } from 'angular-auth-oidc-client';
+
+import { Router, Params } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CustomValidators } from 'ng2-validation';
+
+import { AuthService } from '../../../shared/auth.service'
+import { AlertService } from '../../../shared/alert.service'
+
 
 @Component({
     selector: 'app-signin',
     templateUrl: './signin.component.html',
     styleUrls: ['./signin.component.scss']
 })
-export class SigninComponent implements OnInit, OnDestroy {
-    lang: any;
+export class SigninComponent {
+    loginForm: FormGroup;  
 
-    constructor(public oidcSecurityService: OidcSecurityService
+    constructor(
+        public authService: AuthService,
+        private router: Router,
+        private fb: FormBuilder,
+        private alertService: AlertService
     ) {
-        this.oidcSecurityService.onModuleSetup.subscribe(() => { this.onModuleSetup(); });
+        this.createForm();
     }
 
-    ngOnInit() {
-        if (this.oidcSecurityService.moduleSetup) {
-            this.onModuleSetup();
+    createForm() {
+        this.loginForm = this.fb.group({
+            'email': [null, Validators.compose([Validators.required, CustomValidators.email])],
+            'password': [null, Validators.required]
+        });
+    }
+
+    submitForm($ev, form: FormGroup) {
+        $ev.preventDefault();
+        let value = form.value;
+        for (let c in form.controls) {
+            form.controls[c].markAsTouched();
         }
+        if (form.valid) {
+            this.tryLogin(value);
+        }        
     }
 
-    ngOnDestroy(): void {
-        this.oidcSecurityService.onModuleSetup.unsubscribe();
+    tryFacebookLogin() {
+        this.authService.doFacebookLogin()
+            .then(res => {
+                this.router.navigate(['/dashboard']);
+            }).catch(err => {
+                console.log('fb error' + err.message);
+                this.alertService.showFailure('', err.message);
+            })
+    }   
+
+    tryGoogleLogin() {
+        this.authService.doGoogleLogin()
+            .then(res => {
+                this.router.navigate(['/dashboard']);
+            })
+            .catch(err => {
+                this.alertService.showFailure('', err.message);
+            })
     }
 
-    private onModuleSetup() {
-        console.log('signin component onModuleSetup()');
-        this.oidcSecurityService.authorize();
+    tryLogin(value) {
+        this.authService.doLogin(value)
+            .then(res => {
+                this.router.navigate(['/dashboard']);
+            }, err => {               
+                this.alertService.showFailure('', err.message);
+            })
     }
+
+    
 
 }

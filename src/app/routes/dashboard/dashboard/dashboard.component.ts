@@ -1,7 +1,11 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation, AfterViewInit, ViewChild } from '@angular/core';
 import { GoogleMapsAPIWrapper } from '@agm/core';
-import { OidcSecurityService } from 'angular-auth-oidc-client';
-import { Subscription } from 'rxjs/Subscription';
+
+import { ActivatedRoute } from '@angular/router';
+import { FirebaseUserModel } from '../../../shared/user.model';
+
+import { UserService } from '../../../shared/user.service';
+import { AuthService } from '../../../shared/auth.service';
 
 declare var $: any;
 declare var google: any;
@@ -21,8 +25,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
     public dt: Date = new Date();
     tm;
-    userDataSubscription: Subscription;
-    isAuthorizedSubscription: Subscription;
+   
 
     // Sparklines
     sparkValue1 = [4, 2, 3, 5, 3, 2, 3, 4, 6];
@@ -315,23 +318,13 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     };
 
-    constructor(pt: PagetitleService, private colors: ColorsService, private mapWrapper: GoogleMapsAPIWrapper,
-        private oidcSecurityService: OidcSecurityService) {
+    constructor(pt: PagetitleService, 
+        private colors: ColorsService, 
+        private mapWrapper: GoogleMapsAPIWrapper,
+        public userService: UserService,
+        public authService: AuthService,
+        private route: ActivatedRoute,) {
         pt.setTitle('Dashboard');
-
-        if (this.oidcSecurityService.moduleSetup) {
-            this.doCallbackLogicIfRequired();
-        } else {
-            this.oidcSecurityService.onModuleSetup.subscribe(() => {
-                this.doCallbackLogicIfRequired();
-            });
-        }
-    }
-
-    private doCallbackLogicIfRequired() {
-        if (window.location.hash) {
-            this.oidcSecurityService.authorizedCallback();
-        }
     }
 
     ngOnInit() {
@@ -346,27 +339,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.progress1 = (Math.floor(Math.random() * 20) + 40) + '%';
             this.progress2 = (Math.floor(Math.random() * 10) + 20) + '%';
         }, 4000);
-
-
-        this.isAuthorizedSubscription = this.oidcSecurityService.getIsAuthorized().subscribe(
-            (isAuthorized: boolean) => {
-                console.log('authorized - ' + isAuthorized);
-            });
-
-        this.userDataSubscription = this.oidcSecurityService.getUserData().subscribe(
-            (userData: any) => {
-
-                if (userData && userData !== '') {
-                    console.log('user name = ' + userData.name);
-                    console.log('email = ' + userData.email);
-                    console.log('user - ' + JSON.stringify( userData));
-                } else {
-                    console.log('userData null');
-                }
-
-
-            });
-
 
         // Animate counting of numbers
         $('[data-counter]').each(function () {
@@ -386,6 +358,13 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         });
 
         setTimeout(() => $(window).resize(), 1000);
+
+        this.route.data.subscribe(routeData => {
+            let data = routeData['data'];            
+            if (data) {
+              
+            }
+          })
 
     }
 

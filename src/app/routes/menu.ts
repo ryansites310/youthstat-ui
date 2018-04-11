@@ -172,22 +172,16 @@ const User = {
     iconclass: 'ion-ios-person-outline',
     subitems: [{
         name: 'Signin',
-        link: '/signin'
+        link: '/user/signin'
     }, {
         name: 'Signup',
-        link: '/signup'
-    }, {
-        name: 'Signin v2',
-        link: '/signinv2'
-    }, {
-        name: 'Signup',
-        link: '/signupv2 v2'
+        link: '/user/signup'
     }, {
         name: 'Lock',
-        link: '/lock'
+        link: '/user/lock'
     }, {
         name: 'Recover',
-        link: '/recover'
+        link: '/user/recover'
     }]
 };
 

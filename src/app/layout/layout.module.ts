@@ -9,10 +9,13 @@ import { SearchComponent } from './header/search/search.component';
 import { FooterComponent } from './footer/footer.component';
 import { SettingsComponent } from './settings/settings.component';
 
+import { ToasterModule, ToasterService } from 'angular2-toaster';
+
 @NgModule({
     imports: [
         RouterModule,
-        SharedModule
+        SharedModule,
+        ToasterModule
     ],
     declarations: [
         LayoutComponent,
@@ -28,6 +31,7 @@ import { SettingsComponent } from './settings/settings.component';
         HeaderComponent,
         SearchComponent,
         SettingsComponent,
-    ]
+    ],
+    providers: [ToasterService]
 })
 export class LayoutModule { }

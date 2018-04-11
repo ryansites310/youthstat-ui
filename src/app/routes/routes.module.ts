@@ -3,7 +3,6 @@ import { RouterModule } from '@angular/router';
 
 import { MenuService } from '../core/menu/menu.service';
 import { SharedModule } from '../shared/shared.module';
-import { UserModule } from './user/user.module';
 
 import { menu } from './menu';
 import { routes } from './routes';
@@ -12,8 +11,7 @@ import { routes } from './routes';
 @NgModule({
     imports: [
         SharedModule,
-        RouterModule.forRoot(routes),
-        UserModule
+        RouterModule.forRoot(routes)
     ],
     declarations: [],
     exports: [

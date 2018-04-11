@@ -15,24 +15,19 @@
             </li>
         </ul>
         <h2 [innerHTML]="pt.getTitle()" class="header-title"></h2>
-        <ul class="float-right">
+        <ul *ngIf="showit" class="float-right">
             <li dropdown class="dropdown">
                 <a dropdownToggle class="dropdown-toggle has-badge">
-                    <img class="header-user-image" src="assets/img/user/01.jpg" alt="header-user-image"><sup class="badge bg-danger">3</sup>
+                    <img class="header-user-image" [src]='user.image' alt="header-user-image">
                 </a>
                 <div *dropdownMenu class="dropdown-menu dropdown-menu-right dropdown-scale">
-                    <h6 class="dropdown-header">User menu</h6>
-                    <a class="dropdown-item">
-                        <span class="float-right badge badge-primary">4</span>
-                        <em class="ion-ios-email-outline icon-lg text-primary"></em>
-                        Messages
-                    </a>
-                    <a class="dropdown-item">
+                    <h6 class="dropdown-header">User menu</h6>                   
+                    <a class="dropdown-item" [routerLink]="'/user/profile'">
                         <em class="ion-ios-gear-outline icon-lg text-primary"></em>
-                        Settings
+                        Profile
                     </a>
                     <div class="dropdown-divider" role="presentation"></div>
-                    <a class="dropdown-item" [routerLink]="'/signin'">
+                    <a class="dropdown-item" (click)="logoff()">
                         <em class="ion-log-out icon-lg text-primary"></em>
                         Logoff
                     </a>

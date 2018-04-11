@@ -1,6 +1,9 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ToasterService, ToasterConfig } from 'angular2-toaster';
 
 import { SettingsService } from '../shared/settings/settings.service';
+import { AlertService } from '../shared/alert.service';
+import { Alert } from 'selenium-webdriver';
 
 @Component({
     selector: 'app-layout',
@@ -10,9 +13,21 @@ import { SettingsService } from '../shared/settings/settings.service';
 })
 export class LayoutComponent implements OnInit {
 
-    constructor(private settings: SettingsService) { }
+    public toasterConfig: ToasterConfig = new ToasterConfig({
+        positionClass: 'toast-top-right',
+        timeout: 7000
+    });
 
-    ngOnInit() { }
+    constructor(private settings: SettingsService,
+                private toasterService: ToasterService,
+                private alertService: AlertService) { }
+
+    ngOnInit() {
+        this.alertService.listen().subscribe(alert => {
+            console.log('alert - ' + JSON.stringify(alert));
+            this.toasterService.pop(alert.type, alert.header, alert.message);
+        });
+     }
 
     layout() {
         return [
@@ -28,5 +43,10 @@ export class LayoutComponent implements OnInit {
     closeSidebar() {
         this.settings.app.sidebar.coverModeVisible = false;
         this.settings.app.sidebar.visible = false;
+    }
+
+    showToaster(type, message) {
+       
+        this.toasterService.pop(type, '', message);
     }
 }
