@@ -18,5 +18,6 @@ export interface UserSubscription {
     email?: string;
     subscriptionId?: ObjectId;
     role?: string;
+    permissions?: Array<string>;
     subscription?: Subscription;
 }

@@ -1,9 +1,11 @@
 import { Component, OnInit, Injector, ViewEncapsulation } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 declare var $: any;
+import { Subscription } from 'rxjs/Subscription';
 
 import { MenuService } from '../../core/menu/menu.service';
 import { SettingsService } from '../../shared/settings/settings.service';
+import { AuthService } from '../../shared/auth.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -15,11 +17,15 @@ export class SidebarComponent implements OnInit {
 
     menu: Array<any>;
     router: Router;
+    subscription: Subscription;
 
-    constructor(private menuService: MenuService, public settings: SettingsService, private injector: Injector) {
+    constructor(private menuService: MenuService,
+        public settings: SettingsService,
+        private injector: Injector,
+        private authService: AuthService) {
 
         this.menu = menuService.getMenuSorted();
-
+        this.setVisibility();
     }
 
     ngOnInit() {
@@ -30,6 +36,26 @@ export class SidebarComponent implements OnInit {
                 this.settings.app.sidebar.visible = false;
                 this.settings.app.sidebar.coverModeVisible = false;
             });
+
+        this.subscription = this.authService.userChanged().subscribe(any => {
+            this.setVisibility();
+        })
+    }
+
+    setVisibility() {
+        let user = JSON.parse(localStorage.getItem('user'));
+        let perm = user ? user.userProfile.subscriptions[0].permissions : [];
+        this.menu.forEach(menu => {
+            let hasRole = false
+            menu.permissions.forEach(menupermission => {
+                perm.forEach(permission => {
+                    if (permission === menupermission) {
+                        hasRole = true
+                    }
+                });                
+            });
+            menu.visibleByRole = hasRole;
+        });     
     }
 
     closeSidebar() {
@@ -49,7 +75,7 @@ export class SidebarComponent implements OnInit {
         // remove .active from childs
         lis.find('li').removeClass('active');
         // remove .active from siblings ()
-        $.each(lis, function(key, li) {
+        $.each(lis, function (key, li) {
             if (li !== liparent)
                 $(li).removeClass('active');
         });

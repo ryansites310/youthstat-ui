@@ -5,10 +5,14 @@ import { Router } from "@angular/router";
 import { SettingsService } from '../../shared/settings/settings.service';
 import { PagetitleService } from '../../core/pagetitle/pagetitle.service';
 import { AuthService } from '../../shared/auth.service';
-import { UserService } from '../../shared/user.service';
+import { FirebaseService } from '../../shared/firebase.service';
 import { ActivatedRoute } from '@angular/router';
 import { FirebaseUserModel } from '../../shared/user.model';
 import { Subscription } from 'rxjs/Subscription';
+
+import { NgxPermissionsService } from 'ngx-permissions';
+
+import * as _api from '../../shared/generated/index';
 
 @Component({
     selector: 'app-header',
@@ -27,36 +31,20 @@ export class HeaderComponent implements OnInit {
         public pt: PagetitleService,
         private authService: AuthService,
         private router: Router,
-        private userService: UserService) { }
+        private firebaseService: FirebaseService,
+        private userService: _api.UserService,
+        private permissionsService: NgxPermissionsService) { }
         
     ngOnInit() {      
         this.getUser();
         this.subscription = this.authService.userChanged().subscribe(any => {
-            console.log('user changed in header')
             this.getUser();
-        })
+        });
     }
 
     getUser() {
-        console.log('calling get current user from header');
-        this.userService.getCurrentUser().then(res => {
-            this.user = new FirebaseUserModel();
-            this.showit = true;
-            if (res.providerData[0].providerId == 'password') {
-                this.user.image = 'http://dsi-vd.github.io/patternlab-vd/images/fpo_avatar.png';
-                this.user.name = res.displayName;
-                this.user.provider = res.providerData[0].providerId;
-            }
-            else {
-                this.user.image = res.photoURL;
-                this.user.name = res.displayName;
-                this.user.provider = res.providerData[0].providerId;
-            }                      
-        }).catch(err => {
-            console.log('error caught - ' + err);
-            this.user = null;
-            this.showit = false;
-        });
+        this.user = JSON.parse(localStorage.getItem('user'));
+        this.showit = this.user ? true : false;       
     }
 
     toggleSidebarCoverModeVisible() {
@@ -80,6 +68,8 @@ export class HeaderComponent implements OnInit {
 
     logoff() {
         this.authService.doLogout().then(res => {
+            localStorage.removeItem('user');
+            this.authService.authChanged('Log Off');
             this.router.navigate(['/user/signin']);
         })
     }

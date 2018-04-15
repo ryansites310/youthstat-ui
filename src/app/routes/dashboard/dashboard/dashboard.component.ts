@@ -4,7 +4,7 @@ import { GoogleMapsAPIWrapper } from '@agm/core';
 import { ActivatedRoute } from '@angular/router';
 import { FirebaseUserModel } from '../../../shared/user.model';
 
-import { UserService } from '../../../shared/user.service';
+import { FirebaseService } from '../../../shared/user.service';
 import { AuthService } from '../../../shared/auth.service';
 
 declare var $: any;
@@ -321,7 +321,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     constructor(pt: PagetitleService, 
         private colors: ColorsService, 
         private mapWrapper: GoogleMapsAPIWrapper,
-        public userService: UserService,
+        public userService: FirebaseService,
         public authService: AuthService,
         private route: ActivatedRoute,) {
         pt.setTitle('Dashboard');

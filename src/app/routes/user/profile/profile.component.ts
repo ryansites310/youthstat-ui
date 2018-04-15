@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../../shared/user.service';
+import { FirebaseService } from '../../../shared/user.service';
 import { AuthService } from '../../../shared/auth.service';
 import { AlertService } from '../../../shared/alert.service';
 import { ActivatedRoute } from '@angular/router';
@@ -18,7 +18,7 @@ export class ProfileComponent implements OnInit {
   profileForm: FormGroup;
 
    constructor(
-    public userService: UserService,
+    public firebaseService: FirebaseService,
     public authService: AuthService,
     private route: ActivatedRoute,
     private location : Location,
@@ -45,7 +45,7 @@ export class ProfileComponent implements OnInit {
   }
 
   save(value){
-    this.userService.updateCurrentUser(value)
+    this.firebaseService.updateCurrentUser(value)
     .then(res => {
       this.alertService.showSuccess('', 'Profile updated successfully!');
     }, err => this.alertService.showFailure('', err))

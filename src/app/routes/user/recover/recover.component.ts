@@ -28,7 +28,6 @@ export class RecoverComponent implements OnInit {
         if (form.valid) {
             this.mailSent = true;
         }
-        // console.log(value);
     }
 
     ngOnInit() {

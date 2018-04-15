@@ -7,7 +7,11 @@ import { CustomValidators } from 'ng2-validation';
 import { AuthService } from '../../../shared/auth.service'
 import { AlertService } from '../../../shared/alert.service'
 
+import { FirebaseUserModel } from '../../../shared/user.model';
+
 import * as _api from '../../../shared/generated/index';
+
+import { NgxPermissionsService } from 'ngx-permissions';
 
 @Component({
     selector: 'app-signin',
@@ -15,14 +19,15 @@ import * as _api from '../../../shared/generated/index';
     styleUrls: ['./signin.component.scss']
 })
 export class SigninComponent {
-    loginForm: FormGroup;  
+    loginForm: FormGroup;
 
     constructor(
         public authService: AuthService,
         private router: Router,
         private fb: FormBuilder,
         private alertService: AlertService,
-        private userService: _api.UserService
+        private userService: _api.UserService,
+        private permissionsService: NgxPermissionsService
     ) {
         this.createForm();
     }
@@ -42,27 +47,25 @@ export class SigninComponent {
         }
         if (form.valid) {
             this.tryLogin(value);
-        }        
+        }
     }
 
     tryFacebookLogin() {
+        console.log('1')
         this.authService.doFacebookLogin()
             .then(res => {
-                this.userService.apiUserLoginPost(JSON.stringify("ryan.r.sites@gmail.com")).subscribe(body => {
-
-                    console.log(body);
-                    this.router.navigate(['/dashboard']);
-                })
-                
+                console.log('3')               
+                this.saveUser(res);               
             }).catch(err => {
-                console.log('fb error' + err.message);
                 this.alertService.showFailure('', err.message);
             })
-    }   
+    }
 
     tryGoogleLogin() {
         this.authService.doGoogleLogin()
             .then(res => {
+                
+                this.saveUser(res);
                 this.router.navigate(['/dashboard']);
             })
             .catch(err => {
@@ -73,12 +76,35 @@ export class SigninComponent {
     tryLogin(value) {
         this.authService.doLogin(value)
             .then(res => {
+                this.saveUser(res);
                 this.router.navigate(['/dashboard']);
-            }, err => {               
+            }, err => {
                 this.alertService.showFailure('', err.message);
             })
     }
 
-    
+    saveUser(res) {
+        const user = new FirebaseUserModel();       
+       
+        this.userService.apiUserLoginPost(JSON.stringify(res.user.email)).subscribe(body => {
+            this.permissionsService.loadPermissions(body.subscriptions[0].permissions);     
+            user.userProfile = body;
 
+            if (res.user.providerData[0].providerId == 'password') {
+                user.image = 'http://dsi-vd.github.io/patternlab-vd/images/fpo_avatar.png';
+                user.name = res.user.displayName;
+                user.provider = res.user.providerData[0].providerId;
+            }
+            else {
+                user.image = res.user.photoURL;
+                user.name = res.user.displayName;
+                user.provider = res.user.providerData[0].providerId;
+            }              
+           
+            localStorage.setItem('user', JSON.stringify(user));
+
+            this.authService.authChanged('Facebook');
+            this.router.navigate(['/dashboard']);
+        })
+    }
 }

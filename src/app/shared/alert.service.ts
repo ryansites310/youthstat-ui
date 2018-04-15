@@ -20,7 +20,6 @@ export class AlertService {
   }
 
   showSuccess(header: string, message: string) {
-    console.log('showSuccess')
     this.broadcast({header: header, message: message, type: 'success'});
   }
 

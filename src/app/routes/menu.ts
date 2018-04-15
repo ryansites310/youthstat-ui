@@ -1,14 +1,18 @@
 const headingMenu = {
     order: 0,
     name: 'MENU',
-    heading: true
+    heading: true,
+    permissions: ['view-team', 'edit-team'],
+    visibleByRole: false
 };
 
 const Dashboard = {
     name: 'Dashboard',
     link: '/dashboard',
     iconclass: 'ion-ios-speedometer-outline',
-    order: 1
+    order: 1,
+    permissions: ['view-team', 'edit-team'],
+    visibleByRole: false
 };
 
 // const KanbanBoard = {
@@ -40,6 +44,8 @@ const Elements = {
     link: '/elements',
     iconclass: 'ion-ios-settings',
     order: 3,
+    permissions: ['view-team', 'edit-team'],
+    visibleByRole: false,
     subitems: [{
         name: 'Roster',
         link: '/elements/buttons'

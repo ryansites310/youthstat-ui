@@ -6,13 +6,8 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TranslateService, TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
-// import {
-//     AuthModule,
-//     OidcSecurityService,
-//     OpenIDImplicitFlowConfiguration,
-//     OidcConfigService,
-//     AuthWellKnownEndpoints
-// } from 'angular-auth-oidc-client';
+// Import your library
+import { NgxPermissionsModule } from 'ngx-permissions';
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
@@ -55,6 +50,7 @@ export function createTranslateLoader(http: HttpClient) {
         CoreModule,
         LayoutModule,
         ApiModule,
+        NgxPermissionsModule.forRoot(),
         SharedModule.forRoot(),
         RoutesModule,
         TranslateModule.forRoot({

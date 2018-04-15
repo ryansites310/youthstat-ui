@@ -1,19 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, Router } from "@angular/router";
-import { UserService } from './user.service';
+import { FirebaseService } from './firebase.service';
 import { FirebaseUserModel } from './user.model';
 
 @Injectable()
 export class UserResolver implements Resolve<FirebaseUserModel> {
 
-  constructor(public userService: UserService, private router: Router) { }
+  constructor(public userService: FirebaseService, private router: Router) { }
 
   resolve(route: ActivatedRouteSnapshot): Promise<FirebaseUserModel> {
 
     let user = new FirebaseUserModel();
 
     return new Promise((resolve, reject) => {
-      console.log('calling get current user form resolver');
       this.userService.getCurrentUser()
         .then(res => {
           if (res.providerData[0].providerId == 'password') {

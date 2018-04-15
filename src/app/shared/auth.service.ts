@@ -17,13 +17,16 @@ export class AuthService {
     return this.subject.asObservable();
   }
 
+  authChanged(event) {
+    this.subject.next(event);
+  }
+
   doFacebookLogin() {
     return new Promise<any>((resolve, reject) => {
       let provider = new firebase.auth.FacebookAuthProvider();
       this.afAuth.auth
         .signInWithPopup(provider)
-        .then(res => {
-          this.subject.next('Facebook');
+        .then(res => {         
           resolve(res);
         }, err => {
           reject(err);
@@ -36,8 +39,7 @@ export class AuthService {
       let provider = new firebase.auth.TwitterAuthProvider();
       this.afAuth.auth
         .signInWithPopup(provider)
-        .then(res => {
-          this.subject.next('test');
+        .then(res => {          
           resolve(res);
         }, err => {
           reject(err);
@@ -52,8 +54,7 @@ export class AuthService {
       provider.addScope('email');
       this.afAuth.auth
         .signInWithPopup(provider)
-        .then(res => {
-          this.subject.next('test');
+        .then(res => {         
           resolve(res);
         }, err => {
           reject(err);
@@ -73,8 +74,7 @@ export class AuthService {
   doLogin(value) {
     return new Promise<any>((resolve, reject) => {
       firebase.auth().signInWithEmailAndPassword(value.email, value.password)
-        .then(res => {
-          this.subject.next('Login');
+        .then(res => {          
           resolve(res);
         }, err => reject(err))
     })
@@ -83,8 +83,7 @@ export class AuthService {
   doLogout() {
     return new Promise((resolve, reject) => {
       if (firebase.auth().currentUser) {
-        this.afAuth.auth.signOut()
-        this.subject.next('Logout');
+        this.afAuth.auth.signOut()       
         resolve();
       }
       else {

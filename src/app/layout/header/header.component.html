@@ -18,7 +18,7 @@
         <ul *ngIf="showit" class="float-right">
             <li dropdown class="dropdown">
                 <a dropdownToggle class="dropdown-toggle has-badge">
-                    <img class="header-user-image" [src]='user.image' alt="header-user-image">
+                    <img class="header-user-image" [src]='user?.image' alt="header-user-image">
                 </a>
                 <div *dropdownMenu class="dropdown-menu dropdown-menu-right dropdown-scale">
                     <h6 class="dropdown-header">User menu</h6>                   

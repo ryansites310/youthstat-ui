@@ -39,11 +39,9 @@ export class SignupComponent implements OnInit {
                 this.alertService.showSuccess('', 'User created successfully!')
                 this.router.navigate(['/user/profile']);
             }).catch(err => {
-                console.log(err.message);
                 this.alertService.showFailure('', err.message)
             });
         }
-        console.log(value);
     }
 
     ngOnInit() {

@@ -30,7 +30,6 @@ export class LockComponent implements OnInit {
         if (form.valid) {
             this.router.navigate(['/dashboard']);
         }
-        // console.log(value);
     }
 
     ngOnInit() {

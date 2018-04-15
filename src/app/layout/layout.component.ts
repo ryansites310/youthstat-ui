@@ -24,7 +24,6 @@ export class LayoutComponent implements OnInit {
 
     ngOnInit() {
         this.alertService.listen().subscribe(alert => {
-            console.log('alert - ' + JSON.stringify(alert));
             this.toasterService.pop(alert.type, alert.header, alert.message);
         });
      }

@@ -7,15 +7,18 @@
             <span class="brand-header-logo-text">YouthStat</span>
         </a>
     </div>
-    <div class="sidebar-content">        
+    <div class="sidebar-content">
         <nav class="sidebar-nav" (click)=handleSidebar($event)>
             <!-- 1st level items-->
             <ul>
                 <li *ngFor="let item of menu" [routerLinkActive]="['active']">
                     <!-- support for headings -->
-                    <div *ngIf="item.heading" [innerHTML]="item.name" class="sidebar-nav-heading"></div>
+
+                    <div *ngIf="item.heading && item.visibleByRole" [innerHTML]="item.name" class="sidebar-nav-heading"></div>
+
                     <!-- support for direct links-->
-                    <a [href]="item.href" *ngIf="item.href && !item.heading">
+
+                    <a [href]="item.href" *ngIf="item.href && !item.heading && item.visibleByRole">
                         <span *ngIf="item.subitems?.length" class="pull-right nav-caret">
                             <em class="ion-ios-arrow-right"></em>
                         </span>
@@ -24,12 +27,15 @@
                         </span>
                         <span class="nav-icon" *ngIf="item.iconclass || item.imgpath">
                             <em *ngIf="item.iconclass" [ngClass]="item.iconclass"></em>
-                            <img *ngIf="item.imgpath" [src]="item.imgpath"/>
+                            <img *ngIf="item.imgpath" [src]="item.imgpath" />
                         </span>
                         <span *ngIf="item.name" [innerHTML]="item.name"></span>
                     </a>
+
+
+
                     <!-- support for router links-->
-                    <a [routerLink]="item.link" *ngIf="!item.href && !item.subitems?.length && !item.heading">
+                    <a [routerLink]="item.link" *ngIf="!item.href && !item.subitems?.length && !item.heading && item.visibleByRole">
                         <span *ngIf="item.subitems?.length" class="pull-right nav-caret">
                             <em class="ion-ios-arrow-right"></em>
                         </span>
@@ -38,12 +44,15 @@
                         </span>
                         <span class="nav-icon" *ngIf="item.iconclass || item.imgpath">
                             <em *ngIf="item.iconclass" [ngClass]="item.iconclass"></em>
-                            <img *ngIf="item.imgpath" [src]="item.imgpath"/>
+                            <img *ngIf="item.imgpath" [src]="item.imgpath" />
                         </span>
                         <span *ngIf="item.name" [innerHTML]="item.name"></span>
                     </a>
+
+
+
                     <!-- parent menu items have empty links-->
-                    <a *ngIf="!item.href && item.subitems?.length && !item.heading">
+                    <a *ngIf="!item.href && item.subitems?.length && !item.heading && item.visibleByRole">
                         <span *ngIf="item.subitems?.length" class="pull-right nav-caret">
                             <em class="ion-ios-arrow-right"></em>
                         </span>
@@ -52,10 +61,11 @@
                         </span>
                         <span class="nav-icon" *ngIf="item.iconclass || item.imgpath">
                             <em *ngIf="item.iconclass" [ngClass]="item.iconclass"></em>
-                            <img *ngIf="item.imgpath" [src]="item.imgpath"/>
+                            <img *ngIf="item.imgpath" [src]="item.imgpath" />
                         </span>
                         <span *ngIf="item.name" [innerHTML]="item.name"></span>
                     </a>
+
                     <!-- (2nd) level items-->
                     <ul *ngIf="item.subitems?.length && !item.heading" class="sidebar-subnav">
                         <li *ngFor="let sitem of item.subitems" [routerLinkActive]="['active']">
@@ -69,7 +79,7 @@
                                 </span>
                                 <span class="nav-icon" *ngIf="sitem.iconclass || sitem.imgpath">
                                     <em *ngIf="sitem.iconclass" [ngClass]="sitem.iconclass"></em>
-                                    <img *ngIf="sitem.imgpath" [src]="sitem.imgpath"/>
+                                    <img *ngIf="sitem.imgpath" [src]="sitem.imgpath" />
                                 </span>
                                 <span *ngIf="sitem.name" [innerHTML]="sitem.name"></span>
                             </a>
@@ -83,7 +93,7 @@
                                 </span>
                                 <span class="nav-icon" *ngIf="sitem.iconclass || sitem.imgpath">
                                     <em *ngIf="sitem.iconclass" [ngClass]="sitem.iconclass"></em>
-                                    <img *ngIf="sitem.imgpath" [src]="sitem.imgpath"/>
+                                    <img *ngIf="sitem.imgpath" [src]="sitem.imgpath" />
                                 </span>
                                 <span *ngIf="sitem.name" [innerHTML]="sitem.name"></span>
                             </a>
@@ -97,7 +107,7 @@
                                 </span>
                                 <span class="nav-icon" *ngIf="sitem.iconclass || sitem.imgpath">
                                     <em *ngIf="sitem.iconclass" [ngClass]="sitem.iconclass"></em>
-                                    <img *ngIf="sitem.imgpath" [src]="sitem.imgpath"/>
+                                    <img *ngIf="sitem.imgpath" [src]="sitem.imgpath" />
                                 </span>
                                 <span *ngIf="sitem.name" [innerHTML]="sitem.name"></span>
                             </a>
