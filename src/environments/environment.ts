@@ -12,5 +12,6 @@ export const environment = {
     projectId: "youthstat-8675309",
     storageBucket: "youthstat-8675309.appspot.com",
     messagingSenderId: "1076316369658"
-  }
+  },
+  apiBaseUrl: "http://localhost:54485"
 };

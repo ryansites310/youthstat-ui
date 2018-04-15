@@ -7,6 +7,7 @@ import { CustomValidators } from 'ng2-validation';
 import { AuthService } from '../../../shared/auth.service'
 import { AlertService } from '../../../shared/alert.service'
 
+import * as _api from '../../../shared/generated/index';
 
 @Component({
     selector: 'app-signin',
@@ -20,7 +21,8 @@ export class SigninComponent {
         public authService: AuthService,
         private router: Router,
         private fb: FormBuilder,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private userService: _api.UserService
     ) {
         this.createForm();
     }
@@ -46,7 +48,12 @@ export class SigninComponent {
     tryFacebookLogin() {
         this.authService.doFacebookLogin()
             .then(res => {
-                this.router.navigate(['/dashboard']);
+                this.userService.apiUserLoginPost(JSON.stringify("ryan.r.sites@gmail.com")).subscribe(body => {
+
+                    console.log(body);
+                    this.router.navigate(['/dashboard']);
+                })
+                
             }).catch(err => {
                 console.log('fb error' + err.message);
                 this.alertService.showFailure('', err.message);

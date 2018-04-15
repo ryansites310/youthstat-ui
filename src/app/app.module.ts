@@ -28,6 +28,10 @@ import { RoutesModule } from './routes/routes.module';
 import { AuthService } from './shared/auth.service';
 import { AlertService } from './shared/alert.service';
 
+import { ApiModule } from './shared/generated/api.module'
+
+import { BASE_PATH } from './shared/generated/variables';
+
 // https://github.com/ocombe/ng2-translate/issues/218
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/static/i18n/', '.json');
@@ -37,7 +41,10 @@ export function createTranslateLoader(http: HttpClient) {
     declarations: [
         AppComponent
     ],
-    providers: [AuthService, AlertService],
+    providers: [AuthService,AlertService,{
+        provide: BASE_PATH,
+        useValue: environment.apiBaseUrl
+    }],
     imports: [
         HttpClientModule,
         AngularFireModule.initializeApp(environment.firebase),
@@ -47,6 +54,7 @@ export function createTranslateLoader(http: HttpClient) {
         BrowserAnimationsModule,
         CoreModule,
         LayoutModule,
+        ApiModule,
         SharedModule.forRoot(),
         RoutesModule,
         TranslateModule.forRoot({
